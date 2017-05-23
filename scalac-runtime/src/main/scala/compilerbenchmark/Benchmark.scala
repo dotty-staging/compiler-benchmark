@@ -6,7 +6,6 @@ import scala.tools.nsc.EvalLoop
 import scala.tools.nsc.Global
 import scala.tools.nsc.Settings
 import java.io.File
-import java.net.URLClassLoader
 
 // MainClass is copy-pasted from compiler for source compatibility with 2.10.x - 2.13.x
 class MainClass(tempDir: File, extraArgs: String, cp: String)
@@ -36,10 +35,6 @@ class Benchmark {
               outDir: String,
               extraArgs: String,
               files: Array[String]): Unit = {
-    this.getClass.getClassLoader match {
-      case u: URLClassLoader =>
-        u.getURLs.toList.foreach(println)
-    }
     val driver = new MainClass(
       new File(outDir),
       extraArgs,

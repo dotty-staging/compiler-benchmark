@@ -4,19 +4,11 @@ import scala.tools.nsc.ColdScalacBenchmark
 
 import dotty.tools.dotc.ColdDotcBenchmark
 
-class BenchmarkTest extends org.scalatest.FunSuite {
+import org.junit.Assert._
+import org.junit.Test
 
-  def check(bench: BaseBenchmark, corpus: String): Unit = {
-    val name = s"${bench.getClass.getSimpleName}/$corpus"
-    test(name) {
-      println(s"Running $name")
-      bench.source = s"corpus/$corpus"
-      bench.setup()
-      bench.compile()
-    }
-  }
-
-  for {
+class BenchmarkTest {
+  val runs = for {
     bench <- List(
       new ColdDotcBenchmark,
       new ColdScalacBenchmark
@@ -26,5 +18,18 @@ class BenchmarkTest extends org.scalatest.FunSuite {
       "squants",
       "paiges"
     )
-  } yield check(bench, source)
+  } yield { () =>
+    println(s"Running ${bench.getClass.getSimpleName}/$source")
+    val start = System.currentTimeMillis()
+    bench.source = s"corpus/$source"
+    bench.setup()
+    bench.compile()
+    println(s"Elapsed ${System.currentTimeMillis() - start}")
+  }
+  @Test def dottyVector = runs(0).apply()
+  @Test def dottySquants = runs(1).apply()
+  @Test def dottyPaiges = runs(2).apply()
+  @Test def scalacVector = runs(3).apply()
+  @Test def scalacSquants = runs(4).apply()
+  @Test def scalacPaiges = runs(5).apply()
 }
