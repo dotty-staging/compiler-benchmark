@@ -7,9 +7,7 @@ import dotty.tools.dotc.ColdDotcBenchmark
 import org.junit.Assert._
 import org.junit.Test
 
-abstract class BenchmarkTest {
-
-
+class BenchmarkTest {
   val runs = for {
     bench <- List(
       new ColdDotcBenchmark,
@@ -21,10 +19,12 @@ abstract class BenchmarkTest {
       "paiges"
     )
   } yield { () =>
-    println(s"Running $bench/$source")
+    println(s"Running ${bench.getClass.getSimpleName}/$source")
+    val start = System.currentTimeMillis()
     bench.source = s"corpus/$source"
     bench.setup()
     bench.compile()
+    println(s"Elapsed ${System.currentTimeMillis() - start}")
   }
   @Test def dottyVector = runs(0).apply()
   @Test def dottySquants = runs(1).apply()

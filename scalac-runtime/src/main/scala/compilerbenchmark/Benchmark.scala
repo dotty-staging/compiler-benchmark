@@ -6,7 +6,6 @@ import scala.tools.nsc.EvalLoop
 import scala.tools.nsc.Global
 import scala.tools.nsc.Settings
 import java.io.File
-import java.net.URLClassLoader
 
 // MainClass is copy-pasted from compiler for source compatibility with 2.10.x - 2.13.x
 class MainClass(tempDir: File, extraArgs: String, cp: String)

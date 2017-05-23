@@ -26,7 +26,7 @@ import java.net.URLClassLoader
 import buildinfo.BuildInfo
 
 @State(Scope.Benchmark)
-class BaseBenchmark(compilerJars: Seq[String]) {
+class BaseBenchmark(compilerJars: String) {
 
   @Param(value = Array[String](""))
   var classPath: String = _
@@ -42,14 +42,33 @@ class BaseBenchmark(compilerJars: Seq[String]) {
 
   var compilerArgs: Array[String] = _
 
-  def classloadCompiler(cp: Seq[String]): Compiler = {
+  def classloadCompiler(cp: Array[String]): Compiler = {
     val classloader =
       new URLClassLoader(cp.map(new File(_).toURI.toURL).toArray, null)
     val cls = classloader.loadClass("compilerbenchmark.Benchmark")
-    cls.newInstance().asInstanceOf[Compiler]
+    val arrStr = classOf[Array[String]]
+    val str = classOf[String]
+    val method =
+      cls.getDeclaredMethod("compile", arrStr, str, str, str, arrStr)
+    val instance = cls.newInstance()
+    new Compiler {
+      def x = 2
+      override def compile(compilerClasspath: Array[String],
+                           classpath: String,
+                           outDir: String,
+                           extraArgs: String,
+                           files: Array[String]) =
+        method.invoke(instance,
+                      compilerClasspath,
+                      classpath,
+                      outDir,
+                      extraArgs,
+                      files)
+
+    }
   }
 
-  type Compiler = {
+  abstract class Compiler {
     def compile(compilerClasspath: Array[String],
                 classpath: String,
                 outDir: String,
@@ -57,10 +76,11 @@ class BaseBenchmark(compilerJars: Seq[String]) {
                 files: Array[String]): Unit
   }
 
-  val compiler: Compiler = classloadCompiler(compilerJars)
+  val jars = compilerJars.split(File.pathSeparator)
+  val compiler: Compiler = classloadCompiler(jars)
 
   def compile(): Unit =
-    compiler.compile(compilerJars.toArray,
+    compiler.compile(jars,
                      classPath,
                      tempDir.getAbsolutePath,
                      extraArgs,
