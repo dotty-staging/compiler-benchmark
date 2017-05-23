@@ -36,10 +36,6 @@ class Benchmark {
               outDir: String,
               extraArgs: String,
               files: Array[String]): Unit = {
-    this.getClass.getClassLoader match {
-      case u: URLClassLoader =>
-        u.getURLs.toList.foreach(println)
-    }
     val driver = new MainClass(
       new File(outDir),
       extraArgs,
