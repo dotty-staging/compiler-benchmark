@@ -75,8 +75,9 @@ lazy val compilation = project
   .settings(
     ivyScala := ivyScala.value map { _.copy(overrideScalaVersion = true) },
     description := "Black box benchmark of the compilers",
-    libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % Test,
     fork in run := true,
+    libraryDependencies += "com.novocode" % "junit-interface" % "0.11" % Test,
+    testOptions in Test += Tests.Argument(TestFrameworks.JUnit),
     buildInfoKeys := Seq[BuildInfoKey](
       dottyVersion,
       BuildInfoKey.map(fullClasspath.in(dotcRuntime, Compile)) {
