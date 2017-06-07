@@ -62,9 +62,10 @@ lazy val infrastructure = project
 lazy val dotcRuntime = project
   .in(file("dotc-runtime"))
   .settings(
+    scalaBinaryVersion := "0.2",
     scalaVersion := dottyVersion.value,
-    libraryDependencies += "ch.epfl.lamp" % "dotty-compiler_0.1" % dottyVersion.value,
-    libraryDependencies += "ch.epfl.lamp" % "dotty-library_0.1" % dottyVersion.value
+    libraryDependencies += "ch.epfl.lamp" % "dotty-compiler_0.2" % dottyVersion.value,
+    libraryDependencies += "ch.epfl.lamp" % "dotty-library_0.2" % dottyVersion.value
   )
 
 lazy val scalacRuntime = project
