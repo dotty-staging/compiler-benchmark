@@ -7,10 +7,10 @@ version := "1.0-SNAPSHOT"
 
 val dottyVersion = settingKey[String]("Dotty version to be benchmarked.")
 
-dottyVersion in ThisBuild := sys.env.getOrElse("DOTTY_VERSION",
-                                               DottyVersion.latestNightly.get)
+dottyVersion in ThisBuild := sys.env.getOrElse("DOTC_VERSION",
+                                               dottyLatestNightlyBuild.get)
 
-scalaVersion in ThisBuild := latestScalacVersion
+scalaVersion in ThisBuild := sys.env.getOrElse("SCALAC_VERSION", latestScalacVersion)
 
 // Convenient access to builds from PR validation
 resolvers ++= (
